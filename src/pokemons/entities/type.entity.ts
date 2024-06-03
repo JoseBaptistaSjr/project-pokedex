@@ -1,6 +1,5 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Pokemon } from './pokemon.entity';
-
 @Entity()
 export class Type {
   @PrimaryGeneratedColumn()
