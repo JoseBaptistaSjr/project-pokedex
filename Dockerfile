@@ -1,27 +1,30 @@
-# Use a imagem base do Node.js
+# Use the official Node.js image as the base image
 FROM node:16
 
-# Defina o diretório de trabalho dentro do contêiner
+# Set the working directory
 WORKDIR /app
 
-# Copie o package.json e o package-lock.json para o diretório de trabalho
+# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
-# Instale as dependências do projeto
+# Install dependencies
 RUN npm install
 
-# Copie o restante dos arquivos da aplicação
+# Copy the rest of the application files to the working directory
 COPY . .
 
-# Adicione o script wait-for-it.sh ao contêiner
+# Copy wait-for-it.sh to the working directory
 COPY wait-for-it.sh /app/wait-for-it.sh
+
+# Install netcat for wait-for-it.sh script
+RUN apt-get update && apt-get install -y netcat
+
+# Make wait-for-it.sh executable
 RUN chmod +x /app/wait-for-it.sh
 
-# Compile a aplicação
+# Build the application
 RUN npm run build
 
-# Exponha a porta que a aplicação irá rodar
-EXPOSE 3000
+# Specify the command to run the application
+CMD ["npm", "start"]
 
-# Comando para rodar a aplicação com espera pelo banco de dados
-CMD ["/app/wait-for-it.sh", "db:5432", "--", "npm", "run", "start:prod"]
