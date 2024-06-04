@@ -14,7 +14,7 @@ services:
       - app-network  
 
   app:
-    image: your_app_image
+    build: .
     depends_on:
       - db
     ports:
