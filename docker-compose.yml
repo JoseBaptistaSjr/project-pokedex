@@ -29,7 +29,8 @@ services:
       - app-network
 
 networks:
-  app-network:    
+  app-network:
+    driver: bridge    
 
 volumes:
   pgdata:
