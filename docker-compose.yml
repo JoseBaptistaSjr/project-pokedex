@@ -11,6 +11,7 @@ services:
       - '5432:5432'
     volumes:
       - db-data:/var/lib/postgresql/data
+      - ./backup-utf8.sql:/docker-entrypoint-initdb.d/backup.sql
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 10s
@@ -27,7 +28,10 @@ services:
       db:
         condition: service_healthy
     command: >
-      sh -c "npm run migration:run && npm run start"
+      sh -c "npm run start"
 
 volumes:
   db-data:
+
+#command: >
+     # sh -c "npm run migration:run npm run start"
