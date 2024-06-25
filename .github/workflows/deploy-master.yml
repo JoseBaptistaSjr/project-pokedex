@@ -1,0 +1,40 @@
+name: Deploy Dev
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Login to docker hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build docker image
+        run: docker build -t josebaptista/project-pokedex-app .
+
+      - name: Publish image to docker hub
+        run: docker push josebaptista/project-pokedex-app:latest
+
+  d deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to AWS EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@52.15.89.11 << 'EOF'
+            cd /home/ubuntu/actions-runner
+            docker-compose pull
+            docker-compose up -d --build
