@@ -35,7 +35,7 @@ jobs:
       - name: Deploy to AWS EC2
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@52.15.89.11 << 'EOF'
-            cd /home/ubuntu/project-pokedex
+            cd /home/ubuntu/actions-runner
             docker-compose pull
             docker-compose up -d --build
 EOF
